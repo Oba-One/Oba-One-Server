@@ -1,0 +1,24 @@
+type Ecosystem {
+	name: String!
+}
+
+enum EcosystemType {
+	AIR
+	WATER
+	EARTH
+}
+
+## INPUTS,
+
+## ENUMS
+
+## INTERFACES & UNIONS
+
+##  TYPES
+
+
+
+
+
+## ROOT
+
