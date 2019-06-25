@@ -1,13 +1,8 @@
-const Firestore = require('@google-cloud/firestore');
+import Firestore from '@google-cloud/firestore';
 
-const db = new Firestore({
+const database = new Firestore({
 	projectId: 'obaone-01',
 	keyFilename: './firestore-key.json',
 });
 
-module.exports = () => ({
-	admin: app.doc('admin'),
-	users: db.collection('users'),
-	devices: db.collection('devices'),
-	ecosystem: db.collection('ecosystem'),
-});
+export default database;
