@@ -1,56 +1,73 @@
-// SERVER ENTRY/CONFIGURATION FILE
-
 /**********************************
- NODE & CONFIG IMPORTS
+ NODE, UTILS, & CONFIG IMPORTS
  *********************************/
-const fs = require('fs');
-const path = require('path');
-const fastifyConfig = require('../config/fastify');
-const graphqlConfig = require('../config/graphql');
-const middlewareConfig = require('../config/middleware');
+import fastifyConfig from '../config/fastify';
+import graphqlConfig from '../config/graphql';
+import middlewareConfig from '../config/middleware';
+import loadTypeSchema from './utils/schema';
+import merge from 'lodash/merge';
 
 /***********************************
 APOLLO & GRAPHQL LIBRARIES/IMPORTS
 ***********************************/
-const { ApolloServer, gql } = require('apollo-server-fastify');
-const apiConfig = require('./api');
+import { ApolloServer } from 'apollo-server-fastify';
+const rootSchema = `
+	schema {
+		query: Query
+		mutation: Mutation
+	}
+`;
 
 /***********************************
  MIDDLEWARE & API'S LIBRARIES
  **********************************/
-const compress = require('fastify-compress');
-const helmet = require('fastify-helmet');
-const jwt = require('fastify-jwt');
-const sensible = require('fastify-sensible');
+import compress from 'fastify-compress';
+import helmet from 'fastify-helmet';
+import jwt from 'fastify-jwt';
+import sensible from 'fastify-sensible';
 
 /*****************************
- SERVER & API DECLARATION
+ SERVER, DATABASE & API DECLARATION
  ****************************/
-const fastify = require('fastify')();
-const server = new ApolloServer({
-	...apiConfig(),
-	engine: {
-		apiKey: 'service:Oba-One-01:ymdiQbFKPQwPoKcUPe789g',
-	},
-	cacheControl: {
-		defaultMaxAge: 5,
-	},
-});
+import database from './database';
+import { admin, users, devices, ecosystem, notification } from './api';
+const apis = ['admin', 'devices', 'ecosystem', 'notification', 'users'];
 
 /****************************
  MIDDLEWARE DECLARATION
  ***************************/
-fastify.register(helmet, middlewareConfig.helmet);
-fastify.register(compress, middlewareConfig.compress);
+//fastify.register(helmet, middlewareConfig.helmet);
+//fastify.register(compress, middlewareConfig.compress);
 
 /****************************
 SERVER INITIALIZATION
 ****************************/
-export const startServer = async () => {
+const startServer = async () => {
+	const fastify = require('fastify')();
+	const db = database;
+	const schemaTypes = await Promise.all(apis.map(loadTypeSchema));
+
+	const server = new ApolloServer({
+		typeDefs: [rootSchema, ...schemaTypes],
+		resolvers: merge({}, admin, users, devices, ecosystem, notification),
+		context: async () => {
+			return {
+				app: db.collection('app'),
+				users: db.collection('users'),
+				devices: db.collection('devices'),
+				ecosystem: db.collection('ecosystem'),
+			};
+		},
+	});
+
 	try {
+		const PORT = 3000;
 		fastify.register(server.createHandler());
-		await fastify.listen(3000);
+		await fastify.listen(PORT);
+		console.log(`GQL server ready at Port: ${PORT} 🚀`);
 	} catch (e) {
-		throw new Error('WTF! Server Init Error');
+		console.error(`Server error ${e} 💨`);
 	}
 };
+
+export default startServer;
