@@ -1,4 +1,6 @@
-module.exports = {
+export const admin = {
 	Query: {},
 	Mutation: {},
 };
+
+
