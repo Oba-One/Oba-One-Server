@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-export const loadTypeSchema = type =>
+const loadTypeSchema = type =>
 	new Promise((resolve, reject) => {
 		const pathToSchema = path.join(
 			process.cwd(),
-			`src/types/${type}/${type}.gql`,
+			`src/api/${type}/${type}.gql`,
 		);
 		fs.readFile(pathToSchema, { encoding: 'utf-8' }, (err, schema) => {
 			if (err) {
@@ -15,3 +15,5 @@ export const loadTypeSchema = type =>
 			resolve(schema);
 		});
 	});
+
+export default loadTypeSchema;
