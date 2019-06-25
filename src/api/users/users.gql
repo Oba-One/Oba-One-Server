@@ -1,0 +1,27 @@
+## INPUTS,
+input UserInput {
+
+}
+
+##  TYPES
+type User {
+	id: ID!
+	name: ID!
+}
+
+type PublicProfile {
+	name: String
+}
+
+## ROOT
+type Query {
+	getPublicProfile: PublicProfile
+	getUserProfile: User
+}
+
+type Mutation {
+	loginUser: User
+	logoutUser: User
+	updateUser: User
+	removeUser: User
+}
