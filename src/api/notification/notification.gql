@@ -1,11 +1,39 @@
-## INPUTS,
+## INPUTS
+input NotificationInput {
+    name: String
+    type: NotificationTypeEnum
+}
 
 ## ENUMS
+enum NotificationTypeEnum {
+    DEVICE
+    ECOSYSTEM
+    USER
+}
 
 ## INTERFACES & UNIONS
+interface Notification {
+    name: String
+    type: NotificationTypeEnum
+}
 
-##  TYPES
+## TYPES
+type DeviceNotification implements Notification {
+    name: String
+    type: NotificationTypeEnum
+}
 
+type UserNotification implements Notification {
+    name: String
+    type: NotificationTypeEnum
+}
+
+type EcosystemNotification implements Notification {
+    name: String
+    type: NotificationTypeEnum
+}
 
 ## ROOT
-
+extend type Query {
+    getNotifications(enum: NotificationTypeEnum): [Notification]
+}

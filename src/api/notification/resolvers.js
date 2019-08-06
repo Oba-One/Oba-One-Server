@@ -8,5 +8,9 @@ const observeNotifications = async (_, args = {}, ctx = {}) => {
 export const notification = {
 	Query: {},
 	Mutation: {},
-	Subscriptions: {},
+	Notification: {
+		__resolveType(notification) {
+			return notification
+		}
+	}
 };
