@@ -1,14 +1,30 @@
 ## INPUTS,
+input EcosystemInput {
+	name: String!
+}
 
 ## ENUMS
-
-## INTERFACES & UNIONS
+enum EcosystemEnum {
+	AIR
+	EARTH
+	WATER
+}
 
 ##  TYPES
-
-
-
-
+type Ecosystem {
+	name: String!
+}
 
 ## ROOT
+extend type Query {
+	getEcosystem(enum: EcosystemEnum): Ecosystem
+    getEcosystems: [Ecosystem]
+}
 
+extend type Mutation {
+	updateEcosystem(
+		id: ID!
+		enum: EcosystemEnum
+		input: EcosystemInput
+	): Ecosystem
+}
