@@ -1,41 +1,76 @@
-const getPublicProfile = async (_, args = {}, ctx = {}) => {
+const loginUser = async (_, args = { id: '', input: {} }, ctx = {}) => {
+	// Declare Argument Variables
 	const id = args.id;
-	const publicProfile = await ctx.users;
+
+	// Fetch User
+	const user = ctx.users.doc(id);
+	const publicProfile = user.collection('public-profile').get();
 	return publicProfile;
 };
 
-const getUserProfile = async (_, args = {}, ctx = {}) => {
+const logoutUser = async (_, args = { id: '' }, ctx = {}) => {
+	// Declare Argument Variables
 	const id = args.id;
-	const userProfile = await ctx.users;
+
+	// Fetch User
+	const user = ctx.users.doc(id);
+	const publicProfile = user.collection('public-profile').get();
+	return publicProfile;
+};
+
+const getPublicProfile = async (_, args = { id: '' }, ctx = {}) => {
+	// Declare Argument Variables
+	const id = args.id;
+
+	// Fetch User
+	const user = ctx.users.doc(id);
+	const publicProfile = user.collection('public-profile').get();
+	return publicProfile;
+};
+
+const getUserProfile = async (_, args = { id: '' }, ctx = {}) => {
+	// Declare Argument Variables
+	const id = args.id;
+
+	// Fetch User
+	const userProfile = await ctx.users.doc(id).get();
+
+	if (!userProfile) {
+		return {};
+	}
 	return userProfile;
 };
 
-const loginUser = async (_, args = {}, ctx = {}) => {
-	const id = args.id;
-	const userProfile = await ctx.users;
-	return userProfile;
-};
-
-const logoutUser = async (_, args = {}, ctx = {}) => {
-	const id = args.id;
-	const userProfile = await ctx.users;
-	return userProfile;
-};
-
-const updateUser = async (_, args = {}, ctx = {}) => {
+const updateUser = async (_, args = { id: '', input: {} }, ctx = {}) => {
+	// Declare Argument Variables
 	const id = args.id;
 	const userUpdate = args.input;
-	const user = await ctx.user;
-	return user;
+
+	// Fetch User
+	const updatedUser = await ctx.users.doc(id).update(userUpdate);
+
+	return updatedUser;
 };
 
-const removeUser = async (_, args = {}, ctx = {}) => {
+const removeUser = async (_, args = { id: '' }, ctx = {}) => {
+	// Declare Argument Variables
 	const id = args.id;
-	const user = await ctx.user;
-	return user;
+
+	// Fetch User
+	const deletedUser = await ctx.users.doc(id).delete();
+	return deletedUser;
 };
 
-export const users = {
-	Query: {},
-	Mutation: {},
+export default {
+	Query: {
+		getUserProfile,
+		getPublicProfile,
+	},
+
+	Mutation: {
+		loginUser,
+		logoutUser,
+		updateUser,
+		removeUser,
+	},
 };

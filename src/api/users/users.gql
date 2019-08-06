@@ -1,27 +1,34 @@
-## INPUTS,
-input UserInput {
-
+## INPUTS
+input UpdateUserInput {
+	username: String
+	avatar: String
+	email: String
 }
 
-##  TYPES
+input AuthProfileInput {
+	email: String
+}
+
+## TYPES
 type User {
-	id: ID!
-	name: ID!
+	username: String
+	avatar: String
+	email: String
 }
 
 type PublicProfile {
-	name: String
+	username: String
 }
 
 ## ROOT
-type Query {
-	getPublicProfile: PublicProfile
-	getUserProfile: User
+extend type Query {
+	getUserProfile(id: ID!): User
+	getPublicProfile(id: ID!): PublicProfile
 }
 
-type Mutation {
-	loginUser: User
-	logoutUser: User
-	updateUser: User
-	removeUser: User
+extend type Mutation {
+	loginUser(id: ID!, input: AuthProfileInput): User
+	logoutUser(id: ID!): User
+	updateUser(id: ID!, input: UpdateUserInput): User
+	removeUser(id: ID!): User
 }
