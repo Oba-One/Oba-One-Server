@@ -1,9 +1,31 @@
-## INPUTS,
+## INPUTS
+input DeviceInput {
+    id: ID!
+    name: String!
+}
 
 ## ENUMS
+enum DeviceStatus {
+    CONNECTED
+    DISCONNECTED
+    UNKNOWN
+    READY
+}
 
-## INTERFACES & UNIONS
-
-##  TYPES
+## TYPES
+type Device {
+    id: ID!
+    name: String!
+}
 
 ## ROOT
+type Query {
+    getDevice(deviceID: ID!, userID: ID! ): Device
+    getDevices(id: ID!): [Device]
+}
+
+type Mutation {
+    addDevice(id: ID!, input: DeviceInput): Device
+    updateDevice(id: ID! input: DeviceInput): Device
+    deleteDevice(id: ID!): Device
+}

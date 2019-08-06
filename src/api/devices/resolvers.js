@@ -1,16 +1,16 @@
-const getDevice = async (_, args = {}, ctx = {}) => {
+const getDevice = async (_, args = { deviceID: ``, userID: `` }, ctx = {}) => {
 	const id = args.id;
 	const deviceId = args.deviceId;
 	const device = await ctx.devices;
 	return device;
 };
-const getDevices = async (_, args = {}, ctx = {}) => {
+const getDevices = async (_, args = { id: `` }, ctx = {}) => {
 	const id = args.id;
 	const devices = await ctx.devices;
 	return devices;
 };
 
-const addDevice = async (_, args = {}, ctx = {}) => {
+const addDevice = async (_, args = { id: ``, input: {} }, ctx = {}) => {
 	const id = args.id;
 	const deviceId = args.deviceId;
 	const device = args.input;
@@ -18,7 +18,7 @@ const addDevice = async (_, args = {}, ctx = {}) => {
 	return newDevice;
 };
 
-const updateDevice = async (_, args = {}, ctx = {}) => {
+const updateDevice = async (_, args = { id: ``, input: {} }, ctx = {}) => {
 	const id = args.id;
 	const deviceId = args.deviceId;
 	const device = args.input;
@@ -26,7 +26,7 @@ const updateDevice = async (_, args = {}, ctx = {}) => {
 	return updatedDevice;
 };
 
-const deleteDevice = async (_, args = {}, ctx = {}) => {
+const deleteDevice = async (_, args = { id: ``}, ctx = {}) => {
 	const id = args.id;
 	const deviceId = args.deviceId;
 	const deletedDevice = await ctx.devices;
@@ -34,6 +34,13 @@ const deleteDevice = async (_, args = {}, ctx = {}) => {
 };
 
 export const devices = {
-	Query: {},
-	Mutation: {},
+	Query: {
+		getDevice,
+		getDevices,
+	},
+	Mutation: {
+		addDevice,
+		updateDevice,
+		deleteDevice,
+	},
 };
