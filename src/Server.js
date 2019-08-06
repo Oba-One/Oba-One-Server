@@ -11,12 +11,6 @@ import merge from 'lodash/merge';
 APOLLO & GRAPHQL LIBRARIES/IMPORTS
 ***********************************/
 import { ApolloServer } from 'apollo-server-fastify';
-const rootSchema = `
-	schema {
-		query: Query
-		mutation: Mutation
-	}
-`;
 
 /***********************************
  MIDDLEWARE & API'S LIBRARIES
@@ -31,7 +25,7 @@ import sensible from 'fastify-sensible';
  ****************************/
 import database from './database';
 import { admin, users, devices, ecosystem, notification } from './api';
-const apis = ['admin', 'devices', 'ecosystem', 'notification', 'users'];
+const apis = ['users', 'devices', 'ecosystem', 'notification'];
 
 /****************************
  MIDDLEWARE DECLARATION
@@ -43,24 +37,28 @@ const apis = ['admin', 'devices', 'ecosystem', 'notification', 'users'];
 SERVER INITIALIZATION
 ****************************/
 const startServer = async () => {
-	const fastify = require('fastify')();
-	const db = database;
-	const schemaTypes = await Promise.all(apis.map(loadTypeSchema));
+	try {
+		const rootSchema = `
+			schema {
+				query: Query
+				mutation: Mutation
+			}
+		`;
 
-	const server = new ApolloServer({
-		typeDefs: [rootSchema, ...schemaTypes],
-		resolvers: merge({}, admin, users, devices, ecosystem, notification),
-		context: async () => {
-			return {
+		const fastify = require('fastify')();
+		const db = database;
+		const schemaTypes = await Promise.all(apis.map(loadTypeSchema));
+
+		const server = new ApolloServer({
+			typeDefs: [rootSchema, ...schemaTypes],
+			resolvers: merge({}, users, devices, ecosystem, notification),
+			context: {
 				app: db.collection('app'),
 				users: db.collection('users'),
 				devices: db.collection('devices'),
 				ecosystem: db.collection('ecosystem'),
-			};
-		},
-	});
-
-	try {
+			},
+		});
 		const PORT = 3000;
 		fastify.register(server.createHandler());
 		await fastify.listen(PORT);
